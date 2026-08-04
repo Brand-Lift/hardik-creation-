@@ -385,7 +385,7 @@
   // ============================================================
   // CONFIGURATION — Replace with your actual backend URL
   // ============================================================
-  const ADMIN_API_BASE = 'http://localhost:5000/api';
+  const ADMIN_API_BASE = 'http://localhost:5000';
   // The admin API key must match ADMIN_API_KEY in your .env file
   // It will be entered by the user at login time.
 
@@ -424,7 +424,7 @@
     btn.querySelector('.btn-spinner').classList.remove('hidden');
 
     // Validate key by calling a protected endpoint
-    fetch(`${ADMIN_API_BASE}/admin/orders`, {
+    fetch(`${ADMIN_API_BASE}/api/admin/orders`, {
       headers: { 'x-admin-key': key }
     })
     .then(res => {
@@ -481,7 +481,7 @@
           <p>Refreshing orders...</p>
         </td>
       </tr>`;
-    fetch(`${ADMIN_API_BASE}/admin/orders`, {
+    fetch(`${ADMIN_API_BASE}/api/admin/orders`, {
       headers: { 'x-admin-key': adminApiKey }
     })
     .then(res => { if (!res.ok) throw new Error('Failed to fetch orders'); return res.json(); })
@@ -568,7 +568,7 @@
     btn.textContent = '…';
     btn.disabled = true;
 
-    fetch(`${ADMIN_API_BASE}/admin/order/${orderId}/status`, {
+    fetch(`${ADMIN_API_BASE}/api/admin/order/${orderId}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
