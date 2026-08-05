@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Panel – Hardik Creations</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230a0a0a'/><text y='.9em' font-size='60' font-family='Arial' font-weight='bold' fill='%23d4af37' x='10'>HC</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .admin-login-overlay { position: fixed; inset: 0; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s, visibility 0.5s; }
+    .admin-login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .admin-login-card { max-width: 400px; width: 90%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; text-align: center; }
+    .admin-login-card .admin-logo { font-size: 3rem; font-weight: 900; color: var(--gold); letter-spacing: -2px; margin-bottom: 6px; }
+    .admin-login-card h2 { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; font-weight: 400; }
+    .admin-layout { min-height: 100vh; background: var(--bg-primary); }
+    .admin-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .admin-header-brand { display: flex; align-items: center; gap: 12px; }
+    .admin-header-logo { width: 40px; height: 40px; background: var(--gradient-gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 0.9rem; }
+    .admin-header-title h1 { font-size: 1.1rem; color: var(--text-primary); margin: 0; }
+    .admin-header-title p { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
+    .admin-logout-btn { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #ff3b30; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: var(--font-primary); transition: all 0.2s; }
+    .admin-logout-btn:hover { background: rgba(255,59,48,0.3); }
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 24px 32px; }
+    .admin-stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 14px; transition: transform 0.2s; }
+    .admin-stat-card:hover { transform: translateY(-3px); }
+    .stat-icon { font-size: 2rem; }
+    .stat-info strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
+    .stat-info small { color: var(--text-muted); font-size: 0.8rem; }
+    .admin-filters { padding: 0 32px 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .admin-search-box { flex: 1; min-width: 220px; position: relative; }
+    .admin-search-box input { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px 10px 10px 38px; border-radius: 10px; font-family: var(--font-primary); font-size: 0.9rem; }
+    .admin-search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .status-filter-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: var(--font-primary); font-size: 0.85rem; transition: all 0.2s; }
+    .status-filter-btn.active, .status-filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .admin-table-wrapper { padding: 0 32px 32px; overflow-x: auto; }
+    .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .admin-table th { background: var(--bg-secondary); padding: 14px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.88rem; vertical-align: middle; }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(212,175,55,0.04); }
+    .status-select { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-family: var(--font-primary); font-size: 0.82rem; min-width: 130px; transition: border-color 0.2s; }
+    .status-select:focus { outline: none; border-color: var(--gold); }
+    .status-select option { background: var(--bg-secondary); }
+    .update-status-btn { background: var(--gradient-gold); border: none; color: #000; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; font-family: var(--font-primary); transition: opacity 0.2s; margin-left: 6px; }
+    .update-status-btn:hover { opacity: 0.85; }
+    .order-items-mini { max-width: 220px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .order-id-cell { font-family: monospace; font-size: 0.78rem; color: var(--gold); }
+    .order-total-cell { font-weight: 700; color: var(--text-primary); }
+    .payment-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
+    .payment-badge.cod { background: rgba(52,199,89,0.15); color: #34c759; }
+    .payment-badge.upi { background: rgba(0,122,255,0.15); color: #007aff; }
+    .expand-items-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-size: 0.78rem; text-decoration: underline; font-family: var(--font-primary); }
+    .items-expanded { display: none; margin-top: 6px; }
+    .items-expanded.visible { display: block; }
+    .admin-loading-row td { text-align: center; padding: 60px; color: var(--text-muted); }
+    .admin-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px; }
+    @media (max-width: 768px) { .admin-header { padding: 12px 16px; } .admin-stats { padding: 16px; } .admin-filters { padding: 0 16px 12px; } .admin-table-wrapper { padding: 0 16px 24px; } }
+  </style>
+</head>
+<body>
+<div class="admin-login-overlay" id="admin-login-overlay">
+  <div class="admin-login-card">
+    <div class="admin-logo">HC</div>
+    <h2>Admin Panel Access</h2>
+    <form id="admin-login-form" onsubmit="adminLogin(event)" novalidate>
+      <div class="form-group" style="text-align:left;">
+        <label for="admin-key-input">Admin API Key</label>
+        <input type="password" id="admin-key-input" placeholder="Enter admin key..." autocomplete="off" required />
+      </div>
+      <button type="submit" class="btn-primary btn-full" id="admin-login-btn">
+        <span class="btn-text">Access Admin Panel</span>
+        <span class="btn-spinner hidden"></span>
+      </button>
+    </form>
+    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:16px;">Authorized personnel only.</p>
+  </div>
+</div>
+
+<div class="admin-layout hidden" id="admin-panel">
+  <header class="admin-header">
+    <div class="admin-header-brand">
+      <div class="admin-header-logo">HC</div>
+      <div class="admin-header-title"><h1>Hardik Creations – Admin</h1><p>Order Management Dashboard</p></div>
+    </div>
+    <button class="admin-logout-btn" onclick="adminLogout()">🚪 Logout</button>
+  </header>
+  <div class="admin-stats" id="admin-stats">
+    <div class="admin-stat-card"><div class="stat-icon">📦</div><div class="stat-info"><strong id="stat-total">–</strong><small>Total Orders</small></div></div>
+    <div class="admin-stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><strong id="stat-processing">–</strong><small>Processing</small></div></div>
+    <div class="admin-stat-card"><div class="stat-icon">🚚</div><div class="stat-info"><strong id="stat-shipped">–</strong><small>Shipped</small></div></div>
+    <div class="admin-stat-card"><div class="stat-icon">✅</div><div class="stat-info"><strong id="stat-delivered">–</strong><small>Delivered</small></div></div>
+    <div class="admin-stat-card"><div class="stat-icon">💰</div><div class="stat-info"><strong id="stat-revenue">–</strong><small>Total Revenue</small></div></div>
+  </div>
+  <div class="admin-filters">
+    <div class="admin-search-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="admin-search" placeholder="Search by Order ID, Customer, Email..." oninput="filterAdminOrders(this.value)" />
+    </div>
+    <button class="status-filter-btn active" data-filter="all" onclick="applyStatusFilter('all', this)">All</button>
+    <button class="status-filter-btn" data-filter="Processing" onclick="applyStatusFilter('Processing', this)">⏳ Processing</button>
+    <button class="status-filter-btn" data-filter="Shipped" onclick="applyStatusFilter('Shipped', this)">🚚 Shipped</button>
+    <button class="status-filter-btn" data-filter="Delivered" onclick="applyStatusFilter('Delivered', this)">✅ Delivered</button>
+    <button class="status-filter-btn" data-filter="Cancelled" onclick="applyStatusFilter('Cancelled', this)">❌ Cancelled</button>
+    <button class="status-filter-btn" onclick="fetchAllOrders()" title="Refresh">🔄 Refresh</button>
+  </div>
+  <div class="admin-table-wrapper">
+    <table class="admin-table" id="admin-orders-table">
+      <thead><tr><th>Order ID</th><th>Customer</th><th>Email</th><th>Items</th><th>Total</th><th>Payment</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody id="admin-table-body"><tr class="admin-loading-row"><td colspan="9"><div class="admin-spinner"></div><p>Loading orders...</p></td></tr></tbody>
+    </table>
+  </div>
+</div>
+<div id="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+<script>
+  // ✅ LIVE BACKEND
+  const ADMIN_API_BASE = 'https://hardik-creation.onrender.com/api';
+  let adminApiKey = '';
+  let allOrdersData = [];
+  let currentStatusFilter = 'all';
+
+  function showToast(message, type = 'info', duration = 3500) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('toast-visible'));
+    setTimeout(() => { toast.classList.remove('toast-visible'); setTimeout(() => toast.remove(), 400); }, duration);
+  }
+
+  function adminLogin(event) {
+    event.preventDefault();
+    const key = document.getElementById('admin-key-input').value.trim();
+    if (!key) { showToast('Please enter the admin key.', 'error'); return; }
+    const btn = document.getElementById('admin-login-btn');
+    btn.querySelector('.btn-text').classList.add('hidden');
+    btn.querySelector('.btn-spinner').classList.remove('hidden');
+
+    fetch(`${ADMIN_API_BASE}/admin/orders`, { headers: { 'x-admin-key': key } })
+    .then(res => {
+      if (res.status === 401 || res.status === 403) throw new Error('Invalid admin key');
+      if (!res.ok) throw new Error('Server error. Check backend connection.');
+      return res.json();
+    })
+    .then(data => {
+      adminApiKey = key;
+      sessionStorage.setItem('adminKey', key);
+      document.getElementById('admin-login-overlay').classList.add('hidden');
+      document.getElementById('admin-panel').classList.remove('hidden');
+      allOrdersData = data;
+      renderOrdersTable(allOrdersData);
+      updateStats(allOrdersData);
+      showToast('Welcome to Admin Panel!', 'success');
+    })
+    .catch(err => showToast(err.message, 'error'))
+    .finally(() => {
+      btn.querySelector('.btn-text').classList.remove('hidden');
+      btn.querySelector('.btn-spinner').classList.add('hidden');
+    });
+  }
+
+  function adminLogout() {
+    adminApiKey = '';
+    sessionStorage.removeItem('adminKey');
+    allOrdersData = [];
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('admin-login-overlay').classList.remove('hidden');
+    document.getElementById('admin-key-input').value = '';
+    showToast('Logged out.', 'info');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedKey = sessionStorage.getItem('adminKey');
+    if (savedKey) {
+      document.getElementById('admin-key-input').value = savedKey;
+      adminLogin({ preventDefault: () => {} });
+    }
+  });
+
+  function fetchAllOrders() {
+    document.getElementById('admin-table-body').innerHTML = `<tr class="admin-loading-row"><td colspan="9"><div class="admin-spinner"></div><p>Refreshing orders...</p></td></tr>`;
+    fetch(`${ADMIN_API_BASE}/admin/orders`, { headers: { 'x-admin-key': adminApiKey } })
+    .then(res => { if (!res.ok) throw new Error('Failed to fetch orders'); return res.json(); })
+    .then(data => { allOrdersData = data; renderOrdersTable(applyCurrentFilters()); updateStats(allOrdersData); showToast('Orders refreshed.', 'success'); })
+    .catch(err => showToast(err.message, 'error'));
+  }
+
+  function renderOrdersTable(orders) {
+    const tbody = document.getElementById('admin-table-body');
+    if (!orders || orders.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:50px; color:var(--text-muted);">No orders found.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = orders.map(order => {
+      const date = new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      const items = Array.isArray(order.items) ? order.items : [];
+      const itemsSummary = items.map(i => `${i.name} ×${i.quantity}`).join(', ');
+      const itemsDetailed = items.map(i => `<div>• ${i.name} × ${i.quantity} @ ₹${Number(i.price).toLocaleString('en-IN')}</div>`).join('');
+      return `<tr id="order-row-${order.id}">
+        <td class="order-id-cell" title="${order.id}">${order.id.substring(0, 8)}…</td>
+        <td><div style="font-weight:600; color:var(--text-primary);">${escapeHtml(order.customer_name || 'N/A')}</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">📞 ${escapeHtml(order.customer_phone || '')}</div>
+        <div style="font-size:0.73rem; color:var(--text-muted);">${escapeHtml(order.customer_city || '')} ${escapeHtml(order.customer_pincode || '')}</div></td>
+        <td style="font-size:0.82rem; color:var(--text-muted);">${escapeHtml(order.user_email || '–')}</td>
+        <td class="order-items-mini"><div>${escapeHtml(itemsSummary.substring(0, 40))}${itemsSummary.length > 40 ? '…' : ''}</div>
+        <button class="expand-items-btn" onclick="toggleItemsExpand('items-${order.id}')">View details</button>
+        <div class="items-expanded" id="items-${order.id}">${itemsDetailed}</div></td>
+        <td class="order-total-cell">₹${Number(order.total_amount).toLocaleString('en-IN')}</td>
+        <td><span class="payment-badge ${order.payment_method === 'COD' ? 'cod' : 'upi'}">${order.payment_method}</span>
+        ${order.payment_screenshot ? `<div style="margin-top:4px;"><a href="${order.payment_screenshot}" target="_blank" rel="noopener" style="color:var(--gold); font-size:0.75rem;">📸 View</a></div>` : ''}</td>
+        <td style="font-size:0.82rem; white-space:nowrap;">${date}</td>
+        <td><select class="status-select" id="status-select-${order.id}">
+          <option value="Processing" ${order.order_status === 'Processing' ? 'selected' : ''}>⏳ Processing</option>
+          <option value="Shipped" ${order.order_status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
+          <option value="Delivered" ${order.order_status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
+          <option value="Cancelled" ${order.order_status === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
+        </select></td>
+        <td><button class="update-status-btn" onclick="updateOrderStatus('${order.id}')">Save</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  function updateOrderStatus(orderId) {
+    const select = document.getElementById(`status-select-${orderId}`);
+    const newStatus = select.value;
+    const btn = select.closest('tr').querySelector('.update-status-btn');
+    btn.textContent = '…'; btn.disabled = true;
+    fetch(`${ADMIN_API_BASE}/admin/order/${orderId}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'x-admin-key': adminApiKey },
+      body: JSON.stringify({ status: newStatus })
+    })
+    .then(res => { if (!res.ok) throw new Error('Failed to update status'); return res.json(); })
+    .then(() => {
+      const order = allOrdersData.find(o => o.id === orderId);
+      if (order) order.order_status = newStatus;
+      updateStats(allOrdersData);
+      showToast(`Order updated to "${newStatus}"`, 'success');
+    })
+    .catch(err => showToast(err.message, 'error'))
+    .finally(() => { btn.textContent = 'Save'; btn.disabled = false; });
+  }
+
+  function updateStats(orders) {
+    document.getElementById('stat-total').textContent = orders.length;
+    document.getElementById('stat-processing').textContent = orders.filter(o => o.order_status === 'Processing').length;
+    document.getElementById('stat-shipped').textContent = orders.filter(o => o.order_status === 'Shipped').length;
+    document.getElementById('stat-delivered').textContent = orders.filter(o => o.order_status === 'Delivered').length;
+    document.getElementById('stat-revenue').textContent = '₹' + orders.reduce((s, o) => s + Number(o.total_amount || 0), 0).toLocaleString('en-IN');
+  }
+
+  function applyCurrentFilters() {
+    let filtered = [...allOrdersData];
+    if (currentStatusFilter !== 'all') filtered = filtered.filter(o => o.order_status === currentStatusFilter);
+    const q = (document.getElementById('admin-search').value || '').toLowerCase();
+    if (q) filtered = filtered.filter(o => (o.id||'').toLowerCase().includes(q) || (o.customer_name||'').toLowerCase().includes(q) || (o.user_email||'').toLowerCase().includes(q) || (o.customer_city||'').toLowerCase().includes(q));
+    return filtered;
+  }
+
+  function applyStatusFilter(status, btn) {
+    currentStatusFilter = status;
+    document.querySelectorAll('.status-filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+    if (btn && btn.dataset.filter) btn.classList.add('active');
+    renderOrdersTable(applyCurrentFilters());
+  }
+
+  function filterAdminOrders() { renderOrdersTable(applyCurrentFilters()); }
+
+  function toggleItemsExpand(id) { const el = document.getElementById(id); if (el) el.classList.toggle('visible'); }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+</script>
+</body>
+</html>
