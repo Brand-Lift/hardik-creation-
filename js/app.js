@@ -10,7 +10,7 @@
    Replace BACKEND_URL with your deployed backend URL
    ───────────────────────────────────────────────────── */
 const CONFIG = {
-  BACKEND_URL: 'http://localhost:5000/api',   // ← change after deploy
+  BACKEND_URL: 'https://hardik-creation.onrender.com/api',   // live backend
   WHATSAPP_NUMBER: '919876543210',             // ← your WhatsApp number
 };
 
