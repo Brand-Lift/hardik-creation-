@@ -12,258 +12,56 @@
   <link rel="stylesheet" href="css/style.css" />
   <style>
     /* ─────────────────────────────────────────────── */
-    /*  ADMIN-SPECIFIC STYLES                          */
+    /*  ADMIN-SPECIFIC STYLES (unchanged)              */
     /* ─────────────────────────────────────────────── */
-
-    /* Admin Login Gate */
-    .admin-login-overlay {
-      position: fixed; inset: 0;
-      background: var(--bg-primary);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.5s, visibility 0.5s;
-    }
-    .admin-login-overlay.hidden {
-      opacity: 0; visibility: hidden; pointer-events: none;
-    }
-    .admin-login-card {
-      max-width: 400px; width: 90%;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 40px;
-      text-align: center;
-    }
-    .admin-login-card .admin-logo {
-      font-size: 3rem;
-      font-weight: 900;
-      color: var(--gold);
-      letter-spacing: -2px;
-      margin-bottom: 6px;
-    }
+    .admin-login-overlay { position: fixed; inset: 0; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; z-index: 9999; transition: opacity 0.5s, visibility 0.5s; }
+    .admin-login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .admin-login-card { max-width: 400px; width: 90%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; text-align: center; }
+    .admin-login-card .admin-logo { font-size: 3rem; font-weight: 900; color: var(--gold); letter-spacing: -2px; margin-bottom: 6px; }
     .admin-login-card h2 { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px; font-weight: 400; }
-
-    /* Admin Layout */
-    .admin-layout {
-      min-height: 100vh;
-      background: var(--bg-primary);
-    }
-    .admin-header {
-      background: var(--bg-secondary);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .admin-header-brand {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .admin-header-logo {
-      width: 40px; height: 40px;
-      background: var(--gradient-gold);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 900; color: #000; font-size: 0.9rem;
-    }
+    .admin-layout { min-height: 100vh; background: var(--bg-primary); }
+    .admin-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .admin-header-brand { display: flex; align-items: center; gap: 12px; }
+    .admin-header-logo { width: 40px; height: 40px; background: var(--gradient-gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 0.9rem; }
     .admin-header-title h1 { font-size: 1.1rem; color: var(--text-primary); margin: 0; }
     .admin-header-title p { font-size: 0.75rem; color: var(--text-muted); margin: 0; }
-    .admin-logout-btn {
-      background: rgba(255,59,48,0.15);
-      border: 1px solid rgba(255,59,48,0.3);
-      color: #ff3b30;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-family: var(--font-primary);
-      transition: all 0.2s;
-    }
+    .admin-logout-btn { background: rgba(255,59,48,0.15); border: 1px solid rgba(255,59,48,0.3); color: #ff3b30; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-family: var(--font-primary); transition: all 0.2s; }
     .admin-logout-btn:hover { background: rgba(255,59,48,0.3); }
-
-    /* Stats Bar */
-    .admin-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      padding: 24px 32px;
-    }
-    .admin-stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      display: flex; align-items: center; gap: 14px;
-      transition: transform 0.2s;
-    }
+    .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 24px 32px; }
+    .admin-stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 14px; transition: transform 0.2s; }
     .admin-stat-card:hover { transform: translateY(-3px); }
     .stat-icon { font-size: 2rem; }
     .stat-info strong { display: block; font-size: 1.8rem; font-weight: 800; color: var(--gold); }
     .stat-info small { color: var(--text-muted); font-size: 0.8rem; }
-
-    /* Filters & Search */
-    .admin-filters {
-      padding: 0 32px 16px;
-      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-    }
-    .admin-search-box {
-      flex: 1; min-width: 220px;
-      position: relative;
-    }
-    .admin-search-box input {
-      width: 100%;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 10px 10px 10px 38px;
-      border-radius: 10px;
-      font-family: var(--font-primary);
-      font-size: 0.9rem;
-    }
-    .admin-search-box svg {
-      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-    .status-filter-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: var(--font-primary);
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .status-filter-btn.active, .status-filter-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    /* Orders Table */
-    .admin-table-wrapper {
-      padding: 0 32px 32px;
-      overflow-x: auto;
-    }
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--bg-card);
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    .admin-table th {
-      background: var(--bg-secondary);
-      padding: 14px 16px;
-      text-align: left;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 1px solid var(--border);
-    }
-    .admin-table td {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      font-size: 0.88rem;
-      vertical-align: middle;
-    }
+    .admin-filters { padding: 0 32px 16px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .admin-search-box { flex: 1; min-width: 220px; position: relative; }
+    .admin-search-box input { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 10px 10px 10px 38px; border-radius: 10px; font-family: var(--font-primary); font-size: 0.9rem; }
+    .admin-search-box svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .status-filter-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-family: var(--font-primary); font-size: 0.85rem; transition: all 0.2s; }
+    .status-filter-btn.active, .status-filter-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .admin-table-wrapper { padding: 0 32px 32px; overflow-x: auto; }
+    .admin-table { width: 100%; border-collapse: collapse; background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .admin-table th { background: var(--bg-secondary); padding: 14px 16px; text-align: left; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    .admin-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.88rem; vertical-align: middle; }
     .admin-table tr:last-child td { border-bottom: none; }
     .admin-table tr:hover td { background: rgba(212,175,55,0.04); }
-
-    /* Status dropdown in table */
-    .status-select {
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 6px 10px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-family: var(--font-primary);
-      font-size: 0.82rem;
-      min-width: 130px;
-      transition: border-color 0.2s;
-    }
+    .status-select { background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-family: var(--font-primary); font-size: 0.82rem; min-width: 130px; transition: border-color 0.2s; }
     .status-select:focus { outline: none; border-color: var(--gold); }
     .status-select option { background: var(--bg-secondary); }
-
-    .update-status-btn {
-      background: var(--gradient-gold);
-      border: none;
-      color: #000;
-      padding: 6px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.8rem;
-      font-family: var(--font-primary);
-      transition: opacity 0.2s;
-      margin-left: 6px;
-    }
+    .update-status-btn { background: var(--gradient-gold); border: none; color: #000; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.8rem; font-family: var(--font-primary); transition: opacity 0.2s; margin-left: 6px; }
     .update-status-btn:hover { opacity: 0.85; }
-
-    .order-items-mini {
-      max-width: 220px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    .order-id-cell {
-      font-family: monospace;
-      font-size: 0.78rem;
-      color: var(--gold);
-    }
-    .order-total-cell {
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    .payment-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
+    .order-items-mini { max-width: 220px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+    .order-id-cell { font-family: monospace; font-size: 0.78rem; color: var(--gold); }
+    .order-total-cell { font-weight: 700; color: var(--text-primary); }
+    .payment-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; }
     .payment-badge.cod { background: rgba(52,199,89,0.15); color: #34c759; }
     .payment-badge.upi { background: rgba(0,122,255,0.15); color: #007aff; }
-
-    /* Expandable items row */
-    .expand-items-btn {
-      background: none; border: none;
-      color: var(--gold); cursor: pointer;
-      font-size: 0.78rem; text-decoration: underline;
-      font-family: var(--font-primary);
-    }
-    .items-expanded {
-      display: none;
-      margin-top: 6px;
-    }
+    .expand-items-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-size: 0.78rem; text-decoration: underline; font-family: var(--font-primary); }
+    .items-expanded { display: none; margin-top: 6px; }
     .items-expanded.visible { display: block; }
-
-    /* Loading row */
-    .admin-loading-row td {
-      text-align: center;
-      padding: 60px;
-      color: var(--text-muted);
-    }
-    .admin-spinner {
-      display: inline-block;
-      width: 30px; height: 30px;
-      border: 3px solid var(--border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .admin-header { padding: 12px 16px; }
-      .admin-stats { padding: 16px; }
-      .admin-filters { padding: 0 16px 12px; }
-      .admin-table-wrapper { padding: 0 16px 24px; }
-    }
+    .admin-loading-row td { text-align: center; padding: 60px; color: var(--text-muted); }
+    .admin-spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 10px; }
+    @media (max-width: 768px) { .admin-header { padding: 12px 16px; } .admin-stats { padding: 16px; } .admin-filters { padding: 0 16px 12px; } .admin-table-wrapper { padding: 0 16px 24px; } }
   </style>
 </head>
 <body>
@@ -382,19 +180,15 @@
 <!--  ADMIN SCRIPTS                                            -->
 <!-- ======================================================== -->
 <script>
-  // ============================================================
-  // CONFIGURATION — LIVE BACKEND URL
-  // ============================================================
-  const ADMIN_API_BASE = 'https://hardik-creation.onrender.com';
-  // The admin API key must match ADMIN_API_KEY in your .env file
-  // It will be entered by the user at login time.
+  // ✅ LIVE BACKEND URL – Sahi set hai
+  const ADMIN_API_BASE = 'https://hardik-creation.onrender.com/api';
 
   let adminApiKey = '';
   let allOrdersData = [];
   let currentStatusFilter = 'all';
 
   // ─────────────────────────────────────────
-  // Toast helper (shared utility)
+  // Toast helper
   // ─────────────────────────────────────────
   function showToast(message, type = 'info', duration = 3500) {
     const container = document.getElementById('toast-container');
@@ -411,7 +205,7 @@
   }
 
   // ─────────────────────────────────────────
-  // Admin Login Gate
+  // Admin Login
   // ─────────────────────────────────────────
   function adminLogin(event) {
     event.preventDefault();
@@ -423,8 +217,7 @@
     btn.querySelector('.btn-text').classList.add('hidden');
     btn.querySelector('.btn-spinner').classList.remove('hidden');
 
-    // Validate key by calling a protected endpoint
-    fetch(`${ADMIN_API_BASE}/api/admin/orders`, {
+    fetch(`${ADMIN_API_BASE}/admin/orders`, {
       headers: { 'x-admin-key': key }
     })
     .then(res => {
@@ -461,7 +254,6 @@
     showToast('Logged out.', 'info');
   }
 
-  // Auto-login if key is in session storage
   window.addEventListener('DOMContentLoaded', () => {
     const savedKey = sessionStorage.getItem('adminKey');
     if (savedKey) {
@@ -481,7 +273,7 @@
           <p>Refreshing orders...</p>
         </td>
       </tr>`;
-    fetch(`${ADMIN_API_BASE}/api/admin/orders`, {
+    fetch(`${ADMIN_API_BASE}/admin/orders`, {
       headers: { 'x-admin-key': adminApiKey }
     })
     .then(res => { if (!res.ok) throw new Error('Failed to fetch orders'); return res.json(); })
@@ -514,11 +306,6 @@
         `<div>• ${i.name} × ${i.quantity} @ ₹${Number(i.price).toLocaleString('en-IN')}</div>`
       ).join('');
 
-      const statusColors = {
-        Processing: '#d4af37', Shipped: '#007aff', Delivered: '#34c759', Cancelled: '#ff3b30'
-      };
-      const statusColor = statusColors[order.order_status] || '#888';
-
       return `
         <tr id="order-row-${order.id}">
           <td class="order-id-cell" title="${order.id}">${order.id.substring(0, 8)}…</td>
@@ -542,7 +329,7 @@
           </td>
           <td style="font-size:0.82rem; white-space:nowrap;">${date}</td>
           <td>
-            <select class="status-select" id="status-select-${order.id}" aria-label="Order status for order ${order.id.substring(0,8)}">
+            <select class="status-select" id="status-select-${order.id}" aria-label="Order status">
               <option value="Processing" ${order.order_status === 'Processing' ? 'selected' : ''}>⏳ Processing</option>
               <option value="Shipped" ${order.order_status === 'Shipped' ? 'selected' : ''}>🚚 Shipped</option>
               <option value="Delivered" ${order.order_status === 'Delivered' ? 'selected' : ''}>✅ Delivered</option>
@@ -550,9 +337,7 @@
             </select>
           </td>
           <td>
-            <button class="update-status-btn" onclick="updateOrderStatus('${order.id}')">
-              Save
-            </button>
+            <button class="update-status-btn" onclick="updateOrderStatus('${order.id}')">Save</button>
           </td>
         </tr>`;
     }).join('');
@@ -568,7 +353,7 @@
     btn.textContent = '…';
     btn.disabled = true;
 
-    fetch(`${ADMIN_API_BASE}/api/admin/order/${orderId}/status`, {
+    fetch(`${ADMIN_API_BASE}/admin/order/${orderId}/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -578,7 +363,6 @@
     })
     .then(res => { if (!res.ok) throw new Error('Failed to update status'); return res.json(); })
     .then(() => {
-      // Update local data
       const order = allOrdersData.find(o => o.id === orderId);
       if (order) order.order_status = newStatus;
       updateStats(allOrdersData);
@@ -589,7 +373,7 @@
   }
 
   // ─────────────────────────────────────────
-  // Update Stats Cards
+  // Update Stats
   // ─────────────────────────────────────────
   function updateStats(orders) {
     const total = orders.length;
